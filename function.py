@@ -6,7 +6,7 @@ terminador = '10'
 
 def main():
     try:
-        ser = create_ser('COM3', 9600, timeout=1, write_timeout=1)
+        seri = create_ser('COM3', 9600, timeout=1, write_timeout=1)
 
         while True:
             try:

@@ -4,46 +4,51 @@ import time
 terminador = '10'
 
 
-def main():
-    try:
-        ser = create_ser('COM3', 9600, timeout=1, write_timeout=1)
-
-        while True:
-            try:
-                # Prepare data to send
-                data = "Hello Device\n"
-                # Encode and write
-                ser.write(data.encode('utf-8'))
-
-                # Optional: Wait for acknowledgment (if protocol requires it)
-                # ack = ser.readline().decode().strip()
-                # print("ACK:", ack)
-
-                time.sleep(1)  # Adjust based on how frequently you send data
-
-            except serial.SerialTimeoutException:
-                print("Write timeout occurred. Retrying...")
-
-            except serial.SerialException as e:
-                print(f"Serial error: {e}")
-                break
-
-    except Exception as e:
-        print(f"Failed to open serial port: {e}")
-
-
 # Con esta función podemos mandar una petición de identificación para
 # corroborar comunicación
-
-def write_Serial(ser, data):
-    ser.write(data.encode('utf-8'))
-    time.sleep(1)
-
 
 def IDNt(ser):
     global terminador
 
     write_Serial(ser, "*IDN?" + terminador)
+
+
+def write_Serial(ser, data):
+    ser.write(data.encode('utf-8'))
+    time.sleep(1)
+
+def read_one_Serial(ser):
+    if ser.in_waiting > 0:  # Check if there is data waiting
+        line = ser.readline().decode('utf-8').strip()  # Read and decode
+        return line
+
+def read_Serial(ser):
+    data_array = []
+    try:
+        print("Starting to read data...")
+        while True:
+            if ser.in_waiting > 0:  # Check if there is data waiting
+                line = ser.readline().decode('utf-8').strip()  # Read and decode
+                try:
+                    number = float(line)  # Convert to number (int/float)
+                    data_array.append(number)
+                    print(f"Received: {number}")
+                except ValueError:
+                    print(f"Ignored non-numeric data: {line}")
+            time.sleep(0.01)  # Prevent CPU overload
+
+    except KeyboardInterrupt:
+        print("\nStopped by user.")
+
+
+def IDNt(ser):
+    global terminador
+    write_Serial(ser, "*IDN?" + terminador)
+
+
+def OUTp_i(ser,i):
+    global terminador
+    write_Serial(ser, f"OUTP? {i}" + terminador)
 
 
 def closeSer(ser):
@@ -56,7 +61,8 @@ def openSer(ser):
     if not ser.is_open:
         ser.open()
         print("Serial port opened.")
-
+    else:
+        print("Serial port has already been opened.")
 
 def create_ser(port, baud, timeout, write_timeout):
     # Open serial connection0

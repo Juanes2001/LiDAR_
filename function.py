@@ -7,6 +7,27 @@ terminador = '10'
 # Con esta función podemos mandar una petición de identificación para
 # corroborar comunicación
 
+
+def process_command(ser,command):
+
+    command_splitted = command.split(" ")
+
+    match command_splitted[0]:
+        case "Identificar":
+            data = IDNt(ser=ser)
+            return data
+        case "Obtener":
+            data = ""
+            if command_splitted[1] == "X":
+                data = OUTp_i(ser=ser, i=1)
+            elif command_splitted[1] == "Y":
+                data = OUTp_i(ser=ser, i=2)
+            elif command_splitted[1] == "R":
+                data = OUTp_i(ser=ser, i=3)
+            elif command_splitted[1] == "arc":
+                data = OUTp_i(ser=ser, i=4)
+            return data
+
 def IDNt(ser):
     global terminador
 
@@ -44,12 +65,17 @@ def read_Serial(ser):
 def IDNt(ser):
     global terminador
     write_Serial(ser, "*IDN?" + terminador)
-
+    time(0.5)
+    data = read_one_Serial(ser)
+    return data
 
 def OUTp_i(ser,i):
     global terminador
     write_Serial(ser, f"OUTP? {i}" + terminador)
-
+    write_Serial(ser, "*IDN?" + terminador)
+    time(0.5)
+    data = read_one_Serial(ser)
+    return data
 
 def closeSer(ser):
     if ser and ser.is_open:

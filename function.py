@@ -13,7 +13,7 @@ def IDNt(ser):
     write_Serial(ser, "*IDN?" + terminador)
     time.sleep(0.5)
     data = read_one_Serial(ser)
-    return data
+    print(data)
 
 
 def process_command(ser,command):
@@ -22,8 +22,8 @@ def process_command(ser,command):
 
     match command_splitted[0]:
         case "Identificar":
-            data = IDNt(ser=ser)
-            return data
+            IDNt(ser=ser)
+            return None
         case "Obtener":
             data = []
             for i in command_splitted[1:]:

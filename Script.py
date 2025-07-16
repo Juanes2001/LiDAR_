@@ -14,8 +14,7 @@ if __name__ == '__main__':
             data.append(fn.process_command(serial_,command))
             print(data)
 
-            # array_only = [item for item in data if not isinstance(item, str)]
-            # print(array_only)  # [1, 2.5, 4]
+            array_only = [item for item in data if not isinstance(item, str)]
 
     except KeyboardInterrupt:
         # fn.close_ser(serial_)

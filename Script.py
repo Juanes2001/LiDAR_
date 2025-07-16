@@ -4,14 +4,13 @@ if __name__ == '__main__':
 
     serial_ = fn.create_ser('COM3', 9600, timeout=1,write_timeout=1)
     fn.openSer(ser=serial_)
-    while True :
-        try:
-
+    try:
+        while True:
             command = input("Ingrese comando: ")
             data = fn.process_command(serial_,command)
-
-
-
-        except KeyboardInterrupt:
+            print(data)
+    except KeyboardInterrupt:
+        fn.close_ser(serial_)
+        print("Fin de la ejecución\n")
 
 

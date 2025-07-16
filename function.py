@@ -1,8 +1,9 @@
 import serial
 import time
+import numpy as np
 
 terminador = '10'
-
+Array_data = []
 
 # Con esta función podemos mandar una petición de identificación para
 # corroborar comunicación
@@ -17,21 +18,24 @@ def process_command(ser,command):
             data = IDNt(ser=ser)
             return data
         case "Obtener":
-            data = ""
-            if command_splitted[1] == "X":
-                data = OUTp_i(ser=ser, i=1)
-            elif command_splitted[1] == "Y":
-                data = OUTp_i(ser=ser, i=2)
-            elif command_splitted[1] == "R":
-                data = OUTp_i(ser=ser, i=3)
-            elif command_splitted[1] == "arc":
-                data = OUTp_i(ser=ser, i=4)
+            data = []
+            for i in command_splitted[1:]:
+                if i == "x":
+                    data.append(float(OUTp_i(ser=ser, i=1)))
+                elif i == "y":
+                    data.append(float(OUTp_i(ser=ser, i=2)))
+                elif i == "r":
+                    data.append(float(OUTp_i(ser=ser, i=3)))
+                elif i == "arc":
+                    data.append(float(OUTp_i(ser=ser, i=4)))
             return data
 
 def IDNt(ser):
     global terminador
-
     write_Serial(ser, "*IDN?" + terminador)
+    time.sleep(0.5)
+    data = read_one_Serial(ser)
+    return data
 
 
 def write_Serial(ser, data):
@@ -62,13 +66,6 @@ def read_Serial(ser):
         print("\nStopped by user.")
 
 
-def IDNt(ser):
-    global terminador
-    write_Serial(ser, "*IDN?" + terminador)
-    time.sleep(0.5)
-    data = read_one_Serial(ser)
-    return data
-
 def OUTp_i(ser,i):
     global terminador
     write_Serial(ser, f"OUTP? {i}" + terminador)
@@ -77,7 +74,7 @@ def OUTp_i(ser,i):
     data = read_one_Serial(ser)
     return data
 
-def closeSer(ser):
+def close_ser(ser):
     if ser and ser.is_open:
         ser.close()
         print("Serial port closed.")

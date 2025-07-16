@@ -11,6 +11,7 @@ if __name__ == '__main__':
     arr = np.array([[1,2], [3,4]])
     print(arr[:][0])
 
+
     # serial_ = fn.create_ser('COM9', 9600, timeout=1, write_timeout=1)
     # fn.openSer(ser = serial_)
     # try:

@@ -3,7 +3,7 @@ import time
 import numpy as np
 import matplotlib as plt
 
-terminador = '10'
+terminador = "\x0A"
 
 # Con esta función podemos mandar una petición de identificación para
 # corroborar comunicación
@@ -43,9 +43,13 @@ def write_Serial(ser, data):
     time.sleep(1)
 
 def read_one_Serial(ser):
-    if ser.in_waiting > 0:  # Check if there is data waiting
-        line = ser.readline().decode('utf-8').strip()  # Read and decode
-        return line
+    line = ""
+    while True:
+        if ser.in_waiting > 0:  # Check if there is data waiting
+            line += ser.read(ser.in_waiting).decode('utf-8').strip()  # Read and decode
+        else:
+            break
+    return line
 
 def read_Serial(ser):
     data_array = []
@@ -69,7 +73,6 @@ def read_Serial(ser):
 def OUTp_i(ser,i):
     global terminador
     write_Serial(ser, f"OUTP? {i}" + terminador)
-    write_Serial(ser, "*IDN?" + terminador)
     time.sleep(0.5)
     data = read_one_Serial(ser)
     return data

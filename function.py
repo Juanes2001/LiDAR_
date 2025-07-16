@@ -1,12 +1,19 @@
 import serial
 import time
 import numpy as np
+import matplotlib as plt
 
 terminador = '10'
-Array_data = []
 
 # Con esta función podemos mandar una petición de identificación para
 # corroborar comunicación
+
+def IDNt(ser):
+    global terminador
+    write_Serial(ser, "*IDN?" + terminador)
+    time.sleep(0.5)
+    data = read_one_Serial(ser)
+    return data
 
 
 def process_command(ser,command):
@@ -29,13 +36,6 @@ def process_command(ser,command):
                 elif i == "arc":
                     data.append(float(OUTp_i(ser=ser, i=4)))
             return data
-
-def IDNt(ser):
-    global terminador
-    write_Serial(ser, "*IDN?" + terminador)
-    time.sleep(0.5)
-    data = read_one_Serial(ser)
-    return data
 
 
 def write_Serial(ser, data):

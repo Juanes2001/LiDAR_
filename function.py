@@ -65,7 +65,7 @@ def read_Serial(ser):
 def IDNt(ser):
     global terminador
     write_Serial(ser, "*IDN?" + terminador)
-    time(0.5)
+    time.sleep(0.5)
     data = read_one_Serial(ser)
     return data
 
@@ -73,7 +73,7 @@ def OUTp_i(ser,i):
     global terminador
     write_Serial(ser, f"OUTP? {i}" + terminador)
     write_Serial(ser, "*IDN?" + terminador)
-    time(0.5)
+    time.sleep(0.5)
     data = read_one_Serial(ser)
     return data
 

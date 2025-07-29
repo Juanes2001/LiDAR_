@@ -22,21 +22,35 @@ def process_command(ser,command):
 
     match command_splitted[0]:
         case "Identificar":
-            IDNt(ser=ser)
+            IDNt(ser=ser[0])
             return None
-        case "Obtener":
+        case "Obtener_1":
             data = []
             for i in command_splitted[1:]:
                 if i == "x":
-                    data.append(float(OUTp_i(ser=ser, i=1)))
+                    data.append(float(OUTp_i(ser=ser[0], i=1)))
                 elif i == "y":
-                    data.append(float(OUTp_i(ser=ser, i=2)))
+                    data.append(float(OUTp_i(ser=ser[0], i=2)))
                 elif i == "r":
-                    data.append(float(OUTp_i(ser=ser, i=3)))
+                    data.append(float(OUTp_i(ser=ser[0], i=3)))
                 elif i == "arc":
-                    data.append(float(OUTp_i(ser=ser, i=4)))
+                    data.append(float(OUTp_i(ser=ser[0], i=4)))
             return data
-
+        case "Obtener_2":
+            data = []
+            for i in range(0,50):
+                for i in command_splitted[1:]:
+                    if i == "x":
+                        data.append(float(OUTp_i(ser=ser[0], i=1)))
+                    elif i == "y":
+                        data.append(float(OUTp_i(ser=ser[0], i=2)))
+                    elif i == "r":
+                        data.append(float(OUTp_i(ser=ser[0], i=3)))
+                    elif i == "arc":
+                        data.append(float(OUTp_i(ser=ser[0], i=4)))
+                data.append(float(read_one_Serial_LF(ser[1])))
+                time.sleep(1)
+            return data
 
 def write_Serial(ser, data):
     ser.write(data.encode('utf-8'))
@@ -47,6 +61,15 @@ def read_one_Serial(ser):
     while True:
         if ser.in_waiting > 0:  # Check if there is data waiting
             line += ser.read(ser.in_waiting).decode('utf-8').strip()  # Read and decode
+        else:
+            break
+    return line
+
+def read_one_Serial_LF(ser):
+    line = ""
+    while True:
+        if ser.in_waiting > 0:  # Check if there is data waiting
+            line += ser.readline().decode('utf-8').strip()  # Read and decode
         else:
             break
     return line
@@ -78,9 +101,11 @@ def OUTp_i(ser,i):
     return data
 
 def close_ser(ser):
-    if ser and ser.is_open:
-        ser.close()
-        print("Serial port closed.")
+    for i in range(0,len(ser)):
+        if ser[i] and ser.is_open:
+            ser[i].close()
+
+            print("Serial port closed.")
 
 
 def openSer(ser):

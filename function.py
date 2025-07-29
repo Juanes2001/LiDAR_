@@ -38,8 +38,8 @@ def process_command(ser,command):
             return data
         case "Obtener_2":
             data = []
-            for i in range(0,50):
-                for i in command_splitted[1:]:
+            for i in command_splitted[1:]:
+                for j in range(0,50):
                     if i == "x":
                         data.append(float(OUTp_i(ser=ser[0], i=1)))
                     elif i == "y":
@@ -48,8 +48,8 @@ def process_command(ser,command):
                         data.append(float(OUTp_i(ser=ser[0], i=3)))
                     elif i == "arc":
                         data.append(float(OUTp_i(ser=ser[0], i=4)))
-                data.append(float(read_one_Serial_LF(ser[1])))
-                time.sleep(1)
+                    data.append(float(read_one_Serial_LF(ser[1])))
+                    time.sleep(1)
             return data
 
 def write_Serial(ser, data):
@@ -67,11 +67,8 @@ def read_one_Serial(ser):
 
 def read_one_Serial_LF(ser):
     line = ""
-    while True:
-        if ser.in_waiting > 0:  # Check if there is data waiting
-            line += ser.readline().decode('utf-8').strip()  # Read and decode
-        else:
-            break
+    if ser.in_waiting > 0:  # Check if there is data waiting
+        line += ser.readline().decode('utf-8').strip()  # Read and decode
     return line
 
 def read_Serial(ser):
@@ -102,18 +99,19 @@ def OUTp_i(ser,i):
 
 def close_ser(ser):
     for i in range(0,len(ser)):
-        if ser[i] and ser.is_open:
+        if ser[i] and ser[i].is_open:
             ser[i].close()
 
             print("Serial port closed.")
 
 
 def openSer(ser):
-    if not ser.is_open:
-        ser.open()
-        print("Serial port opened.")
-    else:
-        print("Serial port has already been opened.")
+    for i in range(0,len(ser)):
+        if not ser[i].is_open:
+            ser[i].open()
+            print("Serial port opened.")
+        else:
+            print("Serial port has already been opened.")
 
 def create_ser(port, baud, timeout, write_timeout):
     # Open serial connection0
